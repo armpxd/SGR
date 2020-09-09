@@ -1,0 +1,46 @@
+.co {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 65vh;
+}
+
+.me {
+    font-size: 18px;
+    width: 500px;
+    border: 1px solid #DDD;
+    border-radius: 8px;
+    box-shadow: 0 0 5px #DDD;
+    .title {
+        border-radius: 8px 8px 0 0 ;
+        padding: 15px;
+        text-align: center;
+        background-color: #1976d2;
+        color: whitesmoke;
+    }
+
+    .body {
+        .icon {
+            font-size: 6em;
+            color: #1976d2;
+        }
+
+        background-color: #FAFAFA;;
+        padding: 15px;
+        color: #1976d2;
+        .row {
+            padding: 10px;
+        }
+
+        .row~.row {
+            border-top: 1px solid #ddd;
+        }
+
+        .tec {
+            display: flex;
+            justify-content: center;
+            font-size: 13px;
+            color: #777;
+        }
+    }
+}

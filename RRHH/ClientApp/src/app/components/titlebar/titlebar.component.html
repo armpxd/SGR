@@ -1,0 +1,15 @@
+<div class="title" role="banner">
+  <div style="font-size: 30px;">SGR {{(loggedUser.role == Role.RRHH ? '' : ' - Aspirante')}}</div>
+    <div class="spacer"></div>
+    <div>{{(loggedUser.nombre + ' ' + loggedUser.apellidos).trim() | uppercase}}</div>
+    <!-- <div>{{loggedUser.nombreUsuario.trim() | uppercase}}</div> -->
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="singout()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Salir</span>
+      </button>
+    </mat-menu>
+</div>

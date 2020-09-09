@@ -1,0 +1,17 @@
+<div class="side-menu">
+    <h2 class="menu-title">Menú</h2>
+    <div class="menu-item" [routerLink]="['/inicio']" routerLinkActive="active"><mat-icon>home</mat-icon>Inicio</div>
+    <div *ngIf="canShow()" class="menu-section">Administración</div>
+    <div *ngIf="canShow()" class="menu-item" [routerLink]="['/admin/usuarios']" routerLinkActive="active"><mat-icon>people</mat-icon> Usuarios</div>
+    <div *ngIf="canShow()" class="menu-section">Mantenimiento</div>
+    <div *ngIf="canShow()" class="menu-item" [routerLink]="['/mantenimiento/competencias']" routerLinkActive="active"><mat-icon>verified</mat-icon>Competencias</div>
+    <div *ngIf="canShow()" class="menu-item" [routerLink]="['/mantenimiento/departamentos']" routerLinkActive="active"><mat-icon>view_quilt</mat-icon>Departamentos</div>
+    <div *ngIf="canShow()" class="menu-item" [routerLink]="['/mantenimiento/idiomas']" routerLinkActive="active"><mat-icon>translate</mat-icon>Idiomas</div>
+    <div *ngIf="canShow()" class="menu-item" [routerLink]="['/mantenimiento/nivelescapacitacion']" routerLinkActive="active"><mat-icon>analytics</mat-icon>Niveles de capacitación</div>
+    <div *ngIf="canShow()" class="menu-item" [routerLink]="['/mantenimiento/puestos']" routerLinkActive="active"><mat-icon>work</mat-icon>Puestos</div>
+    <div *ngIf="canShow()" class="menu-section">Recursos Humanos</div>
+    <div *ngIf="canShow()" class="menu-item" [routerLink]="['/rrhh/candidatos']" routerLinkActive="active"><mat-icon>person_search</mat-icon>Candidatos</div>
+    <div *ngIf="canShow()" class="menu-item" [routerLink]="['/rrhh/empleados']" routerLinkActive="active"><mat-icon>emoji_people</mat-icon>Empleados</div>
+    <div *ngIf="canShow()" class="menu-section">Reportes</div>
+    <div *ngIf="canShow()" class="menu-item" [routerLink]="['/reporte/nuevoingreso']" routerLinkActive="active"><mat-icon>leaderboard</mat-icon> Empleados de nuevo ingreso</div>
+</div>

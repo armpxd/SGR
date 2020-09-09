@@ -1,0 +1,53 @@
+.side-menu {
+    left: 0;
+    top: 0;
+    padding-top: 60px;
+    height: 100%;
+    width: 300px;
+    background-color: white;
+    border-right: 1px solid #DDD;
+    position: fixed;
+}
+
+.menu-title {
+    text-align: center;
+    padding: 10px;
+    color: #1976d2;   
+    margin: 0; 
+    // border-bottom: 1px solid #DDD;
+    // margin-bottom: 10px;
+}
+
+.menu-section {
+    padding: 5px;
+    color: #1976d2;
+    font-weight: bold;
+    font-size:15px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    color: #1976d2;
+    cursor: pointer;
+    letter-spacing: 1px;
+
+    &:hover {
+        background-color: rgba($color: whitesmoke, $alpha: 0.5);
+    }
+
+    mat-icon {
+        margin-right: 5px;
+    }
+}
+
+.active {
+    background-color: #1976d2;
+    color: whitesmoke;
+    cursor: unset;
+
+    &:hover {
+        background-color: #1976d2;
+    }
+}

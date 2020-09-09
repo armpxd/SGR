@@ -1,0 +1,90 @@
+<app-page title="Reporte de empleados por fecha de ingreso">
+    <div class="container">
+        <div class="title">Filtros</div>
+        <div class="body">
+            <form [formGroup]="frmGroup">
+                <div class="row">
+                    <div class="col-3">
+                        <mat-form-field color="accent" appearance="outline">
+                            <mat-icon matPrefix>event</mat-icon>
+                            <mat-label>Fecha de ingreso</mat-label>
+                            <input matInput formControlName="desde" autocomplete="none" [matDatepicker]="desde" (click)="desde.open()">
+                            <mat-datepicker #desde></mat-datepicker>
+                          </mat-form-field>
+                    </div>
+                    <div class="col-3">
+                        <mat-form-field color="accent" appearance="outline">
+                            <mat-icon matPrefix>event</mat-icon>
+                            <mat-label>Hasta</mat-label>
+                            <input matInput formControlName="hasta" autocomplete="none" [matDatepicker]="hasta" (click)="hasta.open()">
+                            <mat-datepicker #hasta></mat-datepicker>
+                          </mat-form-field>
+                    </div>
+
+                    <div class="col-2" style="margin-bottom: 20px;">
+                        <button sty mat-raised-button type="button" color="primary" (click)="preview()"> <mat-icon>preview</mat-icon> Vista previa</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- <div class="col-2">
+                        <button mat-raised-button type="button" color="primary" (click)="preview()"> <mat-icon>preview</mat-icon> Vista previa</button>
+                    </div> -->
+                    <!-- <div class="col-2">
+                        <button mat-raised-button type="button" color="warn"> <mat-icon>picture_as_pdf</mat-icon> PDF</button>
+                    </div> -->
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="title">Vista Previa</div>
+        <div class="body">
+            <div class="row">
+                <div class="col-10"></div>
+                <div class="col-2">
+                    <button mat-raised-button type="button" class="green" (click)="exportToCSV()"> <mat-icon>border_all</mat-icon> Exportar a Excel</button>
+                </div>
+            <br/>
+            <br/>
+            </div>
+            <div class="row">
+                <table class="tbl">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Apellidos</th>
+                            <th>Cedula</th>
+                            <th>Correo</th>
+                            <th>Departamento</th>
+                            <th>Puesto</th>
+                            <th>Fecha ingreso</th>
+                            <th class="right">Salario</th>
+                            <th class="right">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td *ngIf="TABLEDATA.length == 0" colspan="10" class="nodata">No hay resultados para mostrar</td>
+                        </tr>
+                        <tr *ngFor="let data of TABLEDATA | paginate: paginatorOptions" (dblclick)="openEdit(data)" title="Doble click para editar">
+                            <td>{{data.nombre}}</td>
+                            <td>{{data.apellidos}}</td>
+                            <td>{{data.cedula}}</td>
+                            <td>{{data.correo}}</td>
+                            <td>{{data.puesto.departamento | description}}</td>
+                            <td>{{data.puesto | description}}</td>
+                            <td>{{data.fechaIngreso | date}}</td>
+                            <td class="right">{{data.salario | currency}}</td>
+                            <td class="right">{{data.estado | state}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <div class="col-12">{{TABLEDATA.length}} registros</div>
+            </div>
+        </div>
+    </div>
+</app-page>

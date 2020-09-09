@@ -1,0 +1,182 @@
+<app-page title="Empleados">
+
+    <div class="container">
+        <div class="title">Administrar empleado</div>
+        <div class="body">
+            <form [formGroup]="frmGroup">
+                <div class="row">
+                    <div class="col-3">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Nombre</mat-label>
+                            <mat-icon matPrefix>person</mat-icon>
+                            <input formControlName="nombre" name="name" matInput type="text">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-3">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Apellidos</mat-label>
+                            <mat-icon matPrefix>person</mat-icon>
+                            <input formControlName="apellidos" name="lastname" matInput type="text">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-3">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Cedula</mat-label>
+                            <mat-icon matPrefix>perm_contact_calendar</mat-icon>
+                            <input formControlName="cedula" name="cedula" matInput type="text">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-3">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Correo electrónico</mat-label>
+                            <mat-icon matPrefix>email</mat-icon>
+                            <input formControlName="correo" name="email" matInput type="text">
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-3">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Departamento</mat-label>
+                            <mat-icon matPrefix>view_quilt</mat-icon>
+                            <mat-select formControlName="departamento" (ngModelChange)="onDepartmentChange()">
+                                <mat-option [value]="null"></mat-option>
+                                <mat-option *ngFor="let department of DEPARTMENTS" [value]="department">{{department.descripcion}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-3">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Puesto</mat-label>
+                            <mat-icon matPrefix>work</mat-icon>
+                            <mat-select formControlName="puesto">
+                                <mat-option [value]="null"></mat-option>
+                                <mat-option *ngFor="let position of POSITIONS | department: this.frmGroup.value.departamento" [value]="position">{{position.descripcion}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-3">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Salario</mat-label>
+                            <mat-icon matPrefix>attach_money</mat-icon>
+                            <input formControlName="salario" name="salario" matInput type="number">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col-3">
+                        <mat-form-field color="accent" appearance="outline">
+                            <mat-icon matPrefix>event</mat-icon>
+                            <mat-label>Fecha de ingreso</mat-label>
+                            <input matInput formControlName="fechaIngreso" autocomplete="none" [matDatepicker]="fechaIngreso" (click)="fechaIngreso.open()">
+                            <mat-datepicker #fechaIngreso></mat-datepicker>
+                          </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-1">
+                        <section class="middle">
+                            <mat-checkbox formControlName="estado">Activo</mat-checkbox>
+                        </section>
+                    </div>
+                </div>
+                <div class="row buttons">
+                    <div *ngIf="editing" class="col-2 col-t-4">
+                        <button type="button" mat-raised-button color="accent" (click)="edit()">
+                            <mat-icon>edit</mat-icon>
+                            Editar
+                        </button>
+                    </div>
+                    <div *ngIf="editing" class="col-2 col-t-4">
+                        <button type="button" mat-stroked-button (click)="reset()">
+                            <mat-icon>brush</mat-icon>
+                            Limpiar
+                        </button>
+                    </div>
+                    <div *ngIf="!editing" class="col-2 col-t-4">
+                        <button type="button" mat-raised-button color="primary" (click)="save()">
+                            <mat-icon>save</mat-icon>
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="title">Listado de empleado
+            <div class="items-per-page">
+                <select [(ngModel)]="paginatorOptions.itemsPerPage">
+                    <option [value]="5">5</option>
+                    <option [value]="10">10</option>
+                    <option [value]="15">15</option>
+                    <option [value]="25">25</option>
+                    <option [value]="50">50</option>
+                    <option [value]="100">100</option>
+                    <option [value]="200">200</option>
+                </select>
+            </div>
+        </div>
+        <div class="body">
+            <div class="search-container">
+                <mat-form-field class="example-form-field" appearance="outline">
+                    <mat-label>Buscar</mat-label>
+                    <input matInput type="text" [(ngModel)]="searchValue" (ngModelChange)=search()>
+                    <mat-icon matPrefix>search</mat-icon>
+
+                    <button *ngIf="searchValue" matSuffix mat-icon-button (click)="searchValue=''; search()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field>
+            </div>
+
+            <table class="tbl">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Cedula</th>
+                        <th>Correo</th>
+                        <th>Departamento</th>
+                        <th>Puesto</th>
+                        <th>Fecha ingreso</th>
+                        <th class="right">Salario</th>
+                        <th class="right">Estado</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td *ngIf="FILTERED_TABLEDATA.length == 0" colspan="10" class="nodata">No hay resultados para mostrar</td>
+                    </tr>
+                    <tr *ngFor="let data of FILTERED_TABLEDATA | paginate: paginatorOptions" (dblclick)="openEdit(data)" title="Doble click para editar">
+                        <td>{{data.nombre}}</td>
+                        <td>{{data.apellidos}}</td>
+                        <td>{{data.cedula}}</td>
+                        <td>{{data.correo}}</td>
+                        <td>{{data.puesto.departamento | description}}</td>
+                        <td>{{data.puesto | description}}</td>
+                        <td>{{data.fechaIngreso | date}}</td>
+                        <td class="right">{{data.salario | currency}}</td>
+                        <td class="right">{{data.estado | state}}</td>
+                        <td class="right">
+                            <button class="warning" mat-icon-button title="Editar" (click)="openEdit(data)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button class="danger" mat-icon-button title="Eliminar" (click)="delete(data)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="result-count">
+                {{FILTERED_TABLEDATA.length}}/{{TABLEDATA.length}} resultados
+            </div>
+            <div class="paginator">
+                <pagination-controls (pageChange)="paginatorOptions.currentPage = $event"></pagination-controls>
+            </div>
+        </div>
+    </div>
+</app-page>

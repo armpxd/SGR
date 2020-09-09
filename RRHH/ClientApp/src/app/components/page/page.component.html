@@ -1,0 +1,9 @@
+<app-titlebar></app-titlebar>
+<app-side-menu></app-side-menu>
+
+<div class="page">
+    <div class="title" *ngIf="title">{{title}}</div>
+    <div class="page-body">
+        <ng-content></ng-content>
+    </div>
+</div>
