@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RRHH.Models;
 using RRHH.Models.Database;
 using RRHH.Services.Data;
 
 namespace RRHH.Controllers
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
     [Authorize]
+    [ApiController]
+    [Route("api/[controller]/[action]")]
     public class EmployeeController : ControllerBase
     {
-        readonly MySQLDbContext _dbContext;
+        private readonly MySQLDbContext _dbContext;
 
         public EmployeeController(MySQLDbContext dbContext)
         {
@@ -40,14 +38,19 @@ namespace RRHH.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<object> GetAll()
+        public IEnumerable<object> GetAll(bool includeInactives = true)
         {
-            var result = _dbContext.Empleados
-                              .Include(x => x.Puesto)
-                                .ThenInclude(x=> x.Departamento)
-                              .OrderByDescending(x => x.Estado)
-                              .ThenBy(x => x.Nombre)
-                              .ThenBy(x => x.Correo); ;
+            var result = _dbContext.Empleados.AsQueryable();
+            if (includeInactives)
+                result = result.Where(x => x.Estado == Estado.Activo || x.Estado == Estado.Inactivo);
+            else
+                result = result.Where(x => x.Estado == Estado.Activo);
+
+            result = result.Include(x => x.Puesto)
+                            .ThenInclude(x => x.Departamento)
+                            .OrderByDescending(x => x.Estado)
+                            .ThenBy(x => x.Nombre)
+                            .ThenBy(x => x.Correo);
             return result;
         }
 
@@ -82,10 +85,11 @@ namespace RRHH.Controllers
         public bool Delete(int id)
         {
             if (id <= 0) return false;
-            var lang = _dbContext.Empleados.FirstOrDefault(x => x.EmpleadoId == id);
-            if (lang is null) return false;
+            var item = _dbContext.Empleados.FirstOrDefault(x => x.EmpleadoId == id);
+            if (item is null) return false;
 
-            _dbContext.Remove(lang);
+            item.Estado = Estado.Eliminado;
+            _dbContext.Update(item);
             _dbContext.SaveChanges();
 
             return true;

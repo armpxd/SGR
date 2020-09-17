@@ -1,0 +1,426 @@
+<div class="page">
+    <div class="container" style="width:100%;">
+        <div class="title">Candidato</div>
+        <div class="body">
+            <mat-tab-group [(selectedIndex)]="selectedIndex" animationDuration="200ms">
+                <mat-tab label="Información del solicitante">
+                    <br/>
+                    <form [formGroup]="frmBasicInfo">
+                        <div class="row">
+                            <div class="col-3">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Nombre</mat-label>
+                                    <mat-icon matPrefix>person</mat-icon>
+                                    <input formControlName="nombre" name="name" matInput type="text">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-3">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Apellidos</mat-label>
+                                    <mat-icon matPrefix>person</mat-icon>
+                                    <input formControlName="apellidos" name="lastname" matInput type="text">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-3">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Cédula</mat-label>
+                                    <mat-icon matPrefix>perm_contact_calendar</mat-icon>
+                                    <input formControlName="cedula" name="cedula" matInput type="text">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-3">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Correo electrónico</mat-label>
+                                    <mat-icon matPrefix>email</mat-icon>
+                                    <input formControlName="correo" name="email" matInput type="text">
+                                </mat-form-field>
+                            </div>
+                        </div>
+        
+                        <div class="row">
+                            <div class="col-3">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Teléfono</mat-label>
+                                    <mat-icon matPrefix>local_phone</mat-icon>
+                                    <input formControlName="telefono" name="telefono" matInput type="text">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-3">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Departamento a que aspira</mat-label>
+                                    <mat-icon matPrefix>view_quilt</mat-icon>
+                                    <mat-select formControlName="departamento" (ngModelChange)="onDepartmentChange()">
+                                        <mat-option [value]="null"></mat-option>
+                                        <mat-option *ngFor="let department of DEPARTMENTS" [value]="department">{{department.descripcion}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-3">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Puesto a que aspira</mat-label>
+                                    <mat-icon matPrefix>work</mat-icon>
+                                    <mat-select formControlName="puesto">
+                                        <mat-option [value]="null"></mat-option>
+                                        <mat-option *ngFor="let position of POSITIONS | department: this.frmBasicInfo.value.departamento" [value]="position">{{position.descripcion}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-3">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Salario a que aspira</mat-label>
+                                    <mat-icon matPrefix>attach_money</mat-icon>
+                                    <input formControlName="salarioAspira" name="salario" matInput type="number">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </form>
+                </mat-tab>
+                <mat-tab label="Idiomas">
+                    <br/>
+                    <div class="container">
+                        <div class="title">Idiomas</div>
+                        <div class="body">
+                            <form [formGroup]="frmLanguage">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <mat-form-field appearance="outline">
+                                            <mat-label>Idioma</mat-label>
+                                            <mat-icon matPrefix>view_quilt</mat-icon>
+                                            <mat-select formControlName="idioma">
+                                                <mat-option [value]="null"></mat-option>
+                                                <mat-option *ngFor="let lang of LANGUAGES" [value]="lang">{{lang.descripcion}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="row buttons">
+                                    <div class="col-2">
+                                        <button type="button" mat-raised-button color="primary" (click)="addLanguage()">
+                                            <mat-icon>add</mat-icon>Agregar
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <div class="title">
+                            Idiomas agreados
+                        </div>
+
+                        <div class="body">
+                            <table class="tbl">
+                                <thead>
+                                    <tr>
+                                        <th>Idioma</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let item of data.idiomas; let i = index">
+                                        <td>{{item.descripcion}}</td>
+                                        <td class="right">
+                                            <button class="danger" mat-icon-button title="Remover" (click)="removeLanguage(i)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Competencias">
+                    <br/>
+                    <div class="container">
+                        <div class="title">Competencias</div>
+                        <div class="body">
+                            <form [formGroup]="frmSkill">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <mat-form-field appearance="outline">
+                                            <mat-label>Competencia</mat-label>
+                                            <mat-icon matPrefix>view_quilt</mat-icon>
+                                            <mat-select formControlName="competencia">
+                                                <mat-option [value]="null"></mat-option>
+                                                <mat-option *ngFor="let item of SKILLS" [value]="item">{{item.descripcion}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="row buttons">
+                                    <div class="col-2">
+                                        <button type="button" mat-raised-button color="primary" (click)="addSkill()">
+                                            <mat-icon>add</mat-icon>Agregar
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <div class="title">
+                            Competencias agreadas
+                        </div>
+
+                        <div class="body">
+                            <table class="tbl">
+                                <thead>
+                                    <tr>
+                                        <th>Competencia</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let item of data.competencias; let i = index">
+                                        <td>{{item.descripcion}}</td>
+                                        <td class="right">
+                                            <button class="danger" mat-icon-button title="Remover" (click)="removeSkill(i)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Capacitaciones">
+                    <br/>
+                    <div class="container">
+                        <div class="title">Capacitaciones</div>
+                        <div class="body">
+                            <form [formGroup]="frmCapacitation">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <mat-form-field appearance="outline">
+                                            <mat-label>Nivel de capacitación</mat-label>
+                                            <mat-icon matPrefix>view_quilt</mat-icon>
+                                            <mat-select formControlName="nivel">
+                                                <mat-option [value]="null"></mat-option>
+                                                <mat-option *ngFor="let item of CAPACITATIONLEVELS" [value]="item">{{item.descripcion}}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-3">
+                                        <mat-form-field appearance="outline">
+                                            <mat-label>Institución</mat-label>
+                                            <mat-icon matPrefix>building</mat-icon>
+                                            <input formControlName="institucion" name="institucion" matInput type="text">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-3">
+                                        <mat-form-field appearance="outline">
+                                            <mat-label>Título / Nombre del curso</mat-label>
+                                            <mat-icon matPrefix>person</mat-icon>
+                                            <input formControlName="descripcion" name="name" matInput type="text">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <mat-form-field color="accent" appearance="outline">
+                                            <mat-icon matPrefix>event</mat-icon>
+                                            <mat-label>Desde</mat-label>
+                                            <input matInput formControlName="desde" autocomplete="none" [matDatepicker]="desde" (click)="desde.open()">
+                                            <mat-datepicker #desde></mat-datepicker>
+                                          </mat-form-field>
+                                    </div>
+                                    <div class="col-3">
+                                        <mat-form-field color="accent" appearance="outline">
+                                            <mat-icon matPrefix>event</mat-icon>
+                                            <mat-label>Hasta</mat-label>
+                                            <input matInput formControlName="hasta" autocomplete="none" [matDatepicker]="hasta" (click)="hasta.open()">
+                                            <mat-datepicker #hasta></mat-datepicker>
+                                          </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div class="row buttons">
+                                    <div *ngIf="editingCapacitation" class="col-2 col-t-4">
+                                        <button type="button" mat-raised-button color="accent" (click)="editCapacitation()">
+                                            <mat-icon>edit</mat-icon>
+                                            Editar
+                                        </button>
+                                    </div>
+                                    <div *ngIf="editingCapacitation" class="col-2 col-t-4">
+                                        <button type="button" mat-stroked-button (click)="resetCapacitation()">
+                                            <mat-icon>brush</mat-icon>
+                                            Limpiar
+                                        </button>
+                                    </div>
+                                    <div *ngIf="!editingCapacitation" class="col-2 col-t-4">
+                                        <button type="button" mat-raised-button color="primary" (click)="addCapacitation()">
+                                            <mat-icon>save</mat-icon>
+                                            Agregar
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <div class="title">
+                            Capacitaciones agregadas
+                        </div>
+
+                        <div class="body">
+                            <table class="tbl">
+                                <thead>
+                                    <tr>
+                                        <th>Nivel</th>
+                                        <th>Institución</th>
+                                        <th>Título / Nombre del curso</th>
+                                        <th>Desde</th>
+                                        <th>Hasta</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let item of data.capacitaciones; let i = index">
+                                        <td>{{item.nivel.descripcion}}</td>
+                                        <td>{{item.institucion}}</td>
+                                        <td>{{item.descripcion}}</td>
+                                        <td>{{item.desde | date}}</td>
+                                        <td>{{item.hasta | date}}</td>
+                                        <td class="right">
+                                            <button class="warning" mat-icon-button title="Editar" (click)="openEditCapacitation(item)">
+                                                <mat-icon>edit</mat-icon>
+                                            </button>
+                                            <button class="danger" mat-icon-button title="Remover" (click)="removeCapacitation(i)">
+                                                <mat-icon>delete</mat-icon>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Experiencia laboral">
+                    <br/>
+                    <div class="container">
+                        <div class="title">Experiencia laboral</div>
+                        <div class="body">
+                            <form [formGroup]="frmWorkExperience">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <mat-form-field appearance="outline">
+                                            <mat-label>Empresa</mat-label>
+                                            <mat-icon matPrefix>person</mat-icon>
+                                            <input formControlName="empresa" name="empresa" matInput type="text">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-3">
+                                        <mat-form-field appearance="outline">
+                                            <mat-label>Puesto</mat-label>
+                                            <mat-icon matPrefix>person</mat-icon>
+                                            <input formControlName="puesto" name="puesto" matInput type="text">
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-3">
+                                        <mat-form-field appearance="outline">
+                                            <mat-label>Salario</mat-label>
+                                            <mat-icon matPrefix>money</mat-icon>
+                                            <input formControlName="salario" name="salario" matInput type="number" min="0">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">
+                                        <mat-form-field color="accent" appearance="outline">
+                                            <mat-icon matPrefix>event</mat-icon>
+                                            <mat-label>Desde</mat-label>
+                                            <input matInput formControlName="desde" autocomplete="none" [matDatepicker]="experienciaLaboralDesde" (click)="experienciaLaboralDesde.open()">
+                                            <mat-datepicker #experienciaLaboralDesde></mat-datepicker>
+                                          </mat-form-field>
+                                    </div>
+                                    <div class="col-3">
+                                        <mat-form-field color="accent" appearance="outline">
+                                            <mat-icon matPrefix>event</mat-icon>
+                                            <mat-label>Hasta</mat-label>
+                                            <input matInput formControlName="hasta" autocomplete="none" [matDatepicker]="experienciaLaboralHasta" (click)="experienciaLaboralHasta.open()">
+                                            <mat-datepicker #experienciaLaboralHasta></mat-datepicker>
+                                          </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="row buttons">
+                                    <div *ngIf="editingWorkExperience" class="col-2 col-t-4">
+                                        <button type="button" mat-raised-button color="accent" (click)="editWorkExperience()">
+                                            <mat-icon>edit</mat-icon>
+                                            Editar
+                                        </button>
+                                    </div>
+                                    <div *ngIf="editingWorkExperience" class="col-2 col-t-4">
+                                        <button type="button" mat-stroked-button (click)="resetWorkExperience()">
+                                            <mat-icon>brush</mat-icon>
+                                            Limpiar
+                                        </button>
+                                    </div>
+                                    <div *ngIf="!editingWorkExperience" class="col-2 col-t-4">
+                                        <button type="button" mat-raised-button color="primary" (click)="addWorkExperience()">
+                                            <mat-icon>save</mat-icon>
+                                            Agregar
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <div class="title">
+                            Experiencias laboral agregadas
+                        </div>
+
+                        <div class="body">
+                            <table class="tbl">
+                                <thead>
+                                    <tr>
+                                        <th>Empresa</th>
+                                        <th>Puesto</th>
+                                        <th>Desde</th>
+                                        <th>Hasta</th>
+                                        <th>Salario</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let item of data.experienciasLaboral; let i = index">
+                                        <td>{{item.empresa}}</td>
+                                        <td>{{item.puesto}}</td>
+                                        <td>{{item.desde | date}}</td>
+                                        <td>{{item.hasta | date}}</td>
+                                        <td>{{item.salario | currency}}</td>
+                                        <td class="right">
+                                            <button class="warning" mat-icon-button title="Editar" (click)="openEditWorkExperience(item)">
+                                                <mat-icon>edit</mat-icon>
+                                            </button>
+                                            <button class="danger" mat-icon-button title="Remover" (click)="removeWorkExperience(i)">
+                                            <mat-icon>delete</mat-icon>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </mat-tab>
+              </mat-tab-group>  
+        </div>
+        <div class="footer">
+            <button *ngIf="!isEdit" mat-raised-button (click)="create()" color="primary" >Crear</button>
+            <button *ngIf="isEdit"  mat-raised-button (click)="edit()" color="accent" >Guardar</button>
+        </div>
+    </div>
+</div>

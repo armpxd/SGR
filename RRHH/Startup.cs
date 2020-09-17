@@ -37,7 +37,6 @@ namespace RRHH
 #if DEBUG
             connectionString = Configuration.GetConnectionString("local");
 #else   
-            //connectionString = Configuration.GetConnectionString("remote");
             connectionString = Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb") ?? connectionString;
 #endif
 
@@ -96,18 +95,16 @@ namespace RRHH
 
             app.UseSpa(spa =>
             {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-
                 spa.Options.SourcePath = "ClientApp";
 
+                //Uncoment this if you want to start your Angular application when run in Visual Studio. I prefer to run it separetly.
                 //if (env.IsDevelopment())
                 //{
                 //    spa.UseAngularCliServer(npmScript: "start");
                 //}
             });
 
-
+            // To ensure the database is created (or create it) when the porject starts.
             using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
             var context = serviceScope.ServiceProvider.GetRequiredService<MySQLDbContext>();
             context.Database.EnsureCreated();

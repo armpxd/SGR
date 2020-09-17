@@ -40,7 +40,6 @@ export class PositionsComponent implements OnInit {
               private departmentService: DepartmentService) { }
 
   ngOnInit(): void {
-    this.getAll();
     this.getDepartments();
   }
 
@@ -55,8 +54,9 @@ export class PositionsComponent implements OnInit {
   getDepartments() {
     this.mainService.ShowLoading();
     this.departmentService.GetAll(false).subscribe(response => {
-      this.DEPARTMENTS = response;
       this.mainService.HideLoading();
+      this.getAll();
+      this.DEPARTMENTS = response;
     });
   }
 
@@ -76,6 +76,9 @@ export class PositionsComponent implements OnInit {
 
   save() {
     if(this.validateForm()) {
+      const data: IPosition = this.frmGroup.value;
+      data.estado = data.estado ? 1 : 0;
+
       this.mainService.ShowLoading();
       this.apiService.Create(this.frmGroup.value).subscribe(response => {
         this.mainService.HideLoading();
@@ -94,7 +97,8 @@ export class PositionsComponent implements OnInit {
     if(this.validateForm()) {
       const data: IPosition = this.frmGroup.value;
       data.puestoId = this.editing.puestoId;
-
+      data.estado = data.estado ? 1 : 0;
+      
       this.mainService.ShowLoading();
       this.apiService.Update(data).subscribe(response => {
         this.mainService.HideLoading();
@@ -116,7 +120,7 @@ export class PositionsComponent implements OnInit {
     } else {
       text = text.toLocaleLowerCase();
       this.paginatorOptions.currentPage = 0;
-      this.FILTERED_TABLEDATA = this.TABLEDATA.filter(x => x.descripcion?.toLowerCase()?.includes(text) ||
+      this.FILTERED_TABLEDATA = this.TABLEDATA.filter(x => this.mainService.ContainsNormalize(x.descripcion,text) ||
                                                             x.salarioMaximo?.toString()?.includes(text) ||
                                                             x.salarioMinimo?.toString()?.includes(text));
     }

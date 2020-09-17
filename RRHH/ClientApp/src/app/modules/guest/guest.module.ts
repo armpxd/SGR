@@ -10,10 +10,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { RequestRestorePasswordComponent } from './request-restore-password/request-restore-password.component';
 
 
 @NgModule({
-  declarations: [UserCreatedComponent],
+  declarations: [UserCreatedComponent, RequestRestorePasswordComponent],
   imports: [
     CommonModule,
     GuestRoutingModule,

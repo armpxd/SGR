@@ -8,7 +8,7 @@ export class StorageService {
   private webStorage: Storage;
 
   constructor() {
-    this.webStorage = localStorage;
+    this.webStorage = sessionStorage;
   }
 
   public Set(key: string, value: any): void {

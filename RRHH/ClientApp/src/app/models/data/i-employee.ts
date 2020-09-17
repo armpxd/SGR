@@ -1,5 +1,7 @@
 import { IDepartment } from './i-department';
 import { IPosition } from './i-position';
+import { IAspirant } from './i-aspirant';
+import { State } from '../enums/state';
 
 export interface IEmployee {
     empleadoId: number,
@@ -10,5 +12,6 @@ export interface IEmployee {
     fechaIngreso: Date,
     puesto: IPosition,
     salario: number,
-    estado: boolean
+    candidato?: IAspirant,
+    estado: State
 }

@@ -4,6 +4,7 @@ import { DialogService } from 'src/app/services/dialog.service';
 import { MainService } from 'src/app/services/main.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ISkill } from 'src/app/models/data/i-skill';
+import { State } from 'src/app/models/enums/state';
 
 @Component({
   selector: 'app-skills',
@@ -21,7 +22,7 @@ export class SkillsComponent implements OnInit {
 
   frmGroup = new FormGroup({
     descripcion: new FormControl(null, [Validators.required]),
-    estado: new FormControl(true)
+    estado: new FormControl(State.Activo)
   });
 
   constructor(private apiService: SkillService,
@@ -53,7 +54,10 @@ export class SkillsComponent implements OnInit {
   save() {
     if(this.validateForm()) {
       this.mainService.ShowLoading();
-      this.apiService.Create(this.frmGroup.value).subscribe(response => {
+      const data: ISkill = this.frmGroup.value;
+      data.estado = data.estado ? 1 : 0;
+      
+      this.apiService.Create(data).subscribe(response => {
         this.mainService.HideLoading();
         if(response) {
           this.dialogService.showSnack('Datos guardados correctamente');
@@ -70,6 +74,7 @@ export class SkillsComponent implements OnInit {
     if(this.validateForm()) {
       const data: ISkill = this.frmGroup.value;
       data.competenciaId = this.editing.competenciaId;
+      data.estado = data.estado ? 1 : 0;
 
       this.mainService.ShowLoading();
       this.apiService.Update(data).subscribe(response => {
@@ -92,7 +97,7 @@ export class SkillsComponent implements OnInit {
     } else {
       text = text.toLocaleLowerCase();
       this.paginatorOptions.currentPage = 0;
-      this.FILTERED_TABLEDATA = this.TABLEDATA.filter(x => x.descripcion?.toLowerCase()?.includes(text))
+      this.FILTERED_TABLEDATA = this.TABLEDATA.filter(x => this.mainService.ContainsNormalize(x.descripcion, text))
     }
   }
 

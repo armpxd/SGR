@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { IRegistration } from '../../../models/i-registration';
+import { IRegistration } from '../../../models/data/i-registration';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MainService } from 'src/app/services/main.service';
 import { UserService } from 'src/app/services/data/user.service';
@@ -69,7 +69,7 @@ export class RegistrationComponent implements OnInit {
         if(response) {
           this.routeService.goToUserCreated(data.correo);
         } else {
-          this.dialogService.showSnack('Error al crear el usuario. Valide los datos digitados.');
+          this.dialogService.showSnack('Usuario no creado. Es posible que ya existe un usuario con sus datos. Valide los datos digitados.', 6000);
         }
       });
     }

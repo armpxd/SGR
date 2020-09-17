@@ -7,6 +7,13 @@ import { SharedModule } from './modules/shared/shared.module';
 import { LoadingPageComponent } from './components/loading-page/loading-page.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RequestInterceptor } from './services/request.interceptor';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -17,6 +24,14 @@ import { RequestInterceptor } from './services/request.interceptor';
     AppRoutingModule,
     BrowserAnimationsModule,
     SharedModule,
+    NgxPaginationModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatSelectModule,
+    MatInputModule,
+    MatIconModule,
+    MatButtonModule,
+    MatCheckboxModule
   ],
   entryComponents: [LoadingPageComponent],
   providers: [

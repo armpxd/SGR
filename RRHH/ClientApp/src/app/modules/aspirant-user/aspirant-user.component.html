@@ -1,0 +1,5 @@
+<app-page title="Información de registro">
+    <ng-container *ngIf="data">
+        <app-aspirant-editor [data]="data" (close)="onInformationChange($event)"></app-aspirant-editor>
+    </ng-container>
+</app-page>

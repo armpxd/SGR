@@ -53,6 +53,9 @@ export class CapacitationLevelComponent implements OnInit {
 
   save() {
     if(this.validateForm()) {
+      const data: ICapacitationLevel = this.frmGroup.value;
+      data.estado = data.estado ? 1 : 0;
+      
       this.mainService.ShowLoading();
       this.apiService.Create(this.frmGroup.value).subscribe(response => {
         this.mainService.HideLoading();
@@ -71,6 +74,7 @@ export class CapacitationLevelComponent implements OnInit {
     if(this.validateForm()) {
       const data: ICapacitationLevel = this.frmGroup.value;
       data.nivelCapacitacionId = this.editing.nivelCapacitacionId;
+      data.estado = data.estado ? 1 : 0;
 
       this.mainService.ShowLoading();
       this.apiService.Update(data).subscribe(response => {
@@ -93,7 +97,7 @@ export class CapacitationLevelComponent implements OnInit {
     } else {
       text = text.toLocaleLowerCase();
       this.paginatorOptions.currentPage = 0;
-      this.FILTERED_TABLEDATA = this.TABLEDATA.filter(x => x.descripcion?.toLowerCase()?.includes(text))
+      this.FILTERED_TABLEDATA = this.TABLEDATA.filter(x => this.mainService.ContainsNormalize(x.descripcion, text))
     }
   }
 

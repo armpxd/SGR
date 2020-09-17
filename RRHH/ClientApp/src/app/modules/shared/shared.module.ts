@@ -9,7 +9,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { LoadingPageComponent } from '../../components/loading-page/loading-page.component';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { SideMenuComponent } from '../../components/side-menu/side-menu.component';
 import { ConfirmComponent } from 'src/app/components/confirm/confirm.component';
 import { RouterModule } from '@angular/router';
@@ -23,6 +23,11 @@ import { NivelriesgoPipe } from 'src/app/pipes/nivelriesgo.pipe';
 import { RolePipe } from '../../pipes/role.pipe';
 import { DescriptionPipe } from '../../pipes/description.pipe';
 import { DepartmentPipe } from '../../pipes/department.pipe';
+import { AspirantEditorComponent } from '../../components/aspirant-editor/aspirant-editor.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatTabsModule } from '@angular/material/tabs';
+import { AspirantEditorContainerComponent } from '../../components/aspirant-editor-container/aspirant-editor-container.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +40,9 @@ import { DepartmentPipe } from '../../pipes/department.pipe';
     NivelriesgoPipe,
     RolePipe,
     DescriptionPipe,
-    DepartmentPipe
+    DepartmentPipe,
+    AspirantEditorComponent,
+    AspirantEditorContainerComponent
   ],
   imports: [
     CommonModule,
@@ -54,7 +61,10 @@ import { DepartmentPipe } from '../../pipes/department.pipe';
     FormsModule,
     ReactiveFormsModule,
     MatInputModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatTabsModule
   ],
   exports: [
     TitlebarComponent,
@@ -66,7 +76,11 @@ import { DepartmentPipe } from '../../pipes/department.pipe';
     NivelriesgoPipe,
     RolePipe,
     DescriptionPipe,
-    DepartmentPipe
+    DepartmentPipe,
+    AspirantEditorComponent
+  ],
+  providers: [
+    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
   ]
 })
 export class SharedModule { }

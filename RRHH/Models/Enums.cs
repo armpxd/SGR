@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace RRHH.Models
+﻿namespace RRHH.Models
 {
     public enum NivelRiesgo 
     {
@@ -16,5 +11,12 @@ namespace RRHH.Models
     {
         Candidato = 0,
         RRHH = 1
+    }
+
+    public enum Estado 
+    {
+        Inactivo = 0,
+        Activo = 1,
+        Eliminado = 2
     }
 }

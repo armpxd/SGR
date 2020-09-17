@@ -1,0 +1,21 @@
+.page {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.editor {
+    height: 90%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.footer {
+    height: 10%;
+    position: absolute;
+    bottom: 0;
+}
+
+.right {
+    right: 0;
+}

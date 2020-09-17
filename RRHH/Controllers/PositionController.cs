@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RRHH.Models;
 using RRHH.Models.Database;
 using RRHH.Services.Data;
 
 namespace RRHH.Controllers
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
     [Authorize]
+    [ApiController]
+    [Route("api/[controller]/[action]")]
     public class PositionController : ControllerBase
     {
-        readonly MySQLDbContext _dbContext;
+        private readonly MySQLDbContext _dbContext;
 
         public PositionController(MySQLDbContext dbContext)
         {
@@ -41,9 +39,10 @@ namespace RRHH.Controllers
         public IEnumerable<Puesto> GetAll(bool includeInactives = true)
         {
             var result = _dbContext.Puestos.AsQueryable();
-            if (!includeInactives)
-                result = result.Where(x => x.Estado == true);
-
+            if (includeInactives)
+                result = result.Where(x => x.Estado == Estado.Activo || x.Estado == Estado.Inactivo);
+            else
+                result = result.Where(x => x.Estado == Estado.Activo);
             result = result.Include(x => x.Departamento)
                            .OrderByDescending(x => x.Estado)
                            .ThenBy(x => x.Descripcion);
@@ -54,8 +53,10 @@ namespace RRHH.Controllers
         public IEnumerable<Puesto> GetByDepartment(int departmentId, bool includeInactives = true)
         {
             var result = _dbContext.Puestos.Where(x => x.Departamento.DepartamentoId == departmentId);
-            if (!includeInactives)
-                result = result.Where(x => x.Estado == true);
+            if (includeInactives)
+                result = result.Where(x => x.Estado == Estado.Activo || x.Estado == Estado.Inactivo);
+            else
+                result = result.Where(x => x.Estado == Estado.Activo);
 
             result = result.OrderByDescending(x => x.Estado)
                            .ThenBy(x => x.Departamento.Descripcion)
@@ -88,10 +89,11 @@ namespace RRHH.Controllers
         public bool Delete(int id)
         {
             if (id <= 0) return false;
-            var lang = _dbContext.Puestos.FirstOrDefault(x => x.PuestoId == id);
-            if (lang is null) return false;
+            var item = _dbContext.Puestos.FirstOrDefault(x => x.PuestoId == id);
+            if (item is null) return false;
 
-            _dbContext.Remove(lang);
+            item.Estado = Estado.Eliminado;
+            _dbContext.Update(item);
             _dbContext.SaveChanges();
 
             return true;

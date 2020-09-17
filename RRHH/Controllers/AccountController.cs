@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RRHH.Models;
@@ -20,8 +16,8 @@ using RRHH.Services.Data;
 
 namespace RRHH.Controllers
 {
-    [Route("api/[controller]/[action]")]
     [ApiController]
+    [Route("api/[controller]/[action]")]
     public class AccountController : ControllerBase
     {
         private readonly MySQLDbContext _dbContext;
@@ -35,25 +31,10 @@ namespace RRHH.Controllers
             _appSettings = appSetting.Value;
         }
 
-        [HttpPost]
-        [AllowAnonymous]
-        public object Singin([FromBody] UserLogin model)
-        {
-            if (model is null || !model.IsValid()) return null;
-
-            string password = _security.Hash(model.Password);
-            var user = _dbContext.Usuarios.FirstOrDefault(u => u.NombreUsuario.ToUpper() == model.Username && u.Clave.ToUpper() == password);
-            if (user is null) return null;
-            string token = this.GenerateJwtToken(user);
-            var result = Newtonsoft.Json.JsonConvert.SerializeObject(token);
-
-            return result;
-        }
-
         private string GenerateJwtToken(Usuario user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var key = Encoding.UTF8.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] 
@@ -71,5 +52,35 @@ namespace RRHH.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public object Singin([FromBody] UserLoginViewModel model)
+        {
+            if (model is null || !model.IsValid()) return null;
+            var user = _dbContext.Usuarios.FirstOrDefault(u => u.NombreUsuario.ToUpper() == model.Username && u.Estado == Estado.Activo);
+
+            if (user is null || !_security.CompareHash(model.Password, user.Clave)) return null;
+
+            string token = this.GenerateJwtToken(user);
+            var result = JsonSerializer.Serialize(token);
+
+            return result;
+        }
+
+        // This method is used for test only. It allow to get a hashed password.
+        //[HttpGet]
+        //[AllowAnonymous]
+        //public async Task<string> GH(string id) 
+        //{
+        //    string hash = _security.Hash(id);
+        //    Task<string> tr = new Task<string>(()=> 
+        //    {
+        //        Thread.Sleep(2000);
+        //        return JsonSerializer.Serialize(hash);
+        //    });
+        //    tr.Start();
+        //    return await tr;
+        //}
     }
 }

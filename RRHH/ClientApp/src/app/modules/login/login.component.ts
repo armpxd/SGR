@@ -14,8 +14,8 @@ import { RouteService } from '../../services/route.service';
 export class LoginComponent implements OnInit {
 
   frmGroup = new FormGroup({
-    username: new FormControl('mvallejo', [Validators.required]),
-    password: new FormControl('123456', [Validators.required])
+    username: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required])
   })
   returnUrl: string;
 
@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
   singin() {
     this.frmGroup.markAllAsTouched();
     if (this.frmGroup.invalid) {
-      this.dialogService.showSnack('Invalid username or password');
+      this.dialogService.showSnack('Usuario y/o contraseña incorrectos');
       return;
     }
 
@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
         this.authService.setSessionToken(response);
         this.router.navigate([this.returnUrl]);
       } else {
-        this.dialogService.showSnack('Invalid username or password');
+        this.dialogService.showSnack('Usuario y/o contraseña incorrectos');
       }
     });
     

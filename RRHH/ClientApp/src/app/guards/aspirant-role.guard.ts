@@ -8,7 +8,7 @@ import { DialogService } from '../services/dialog.service';
 @Injectable({
   providedIn: 'root'
 })
-export class RoleGuard implements CanActivate {
+export class AspirantRoleGuard implements CanActivate {
 
   constructor(private authService: AuthService, 
               private routeService: RouteService,
@@ -17,7 +17,7 @@ export class RoleGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
       const user = this.authService.LoggedUser;
-      if(user.role == Role.RRHH) {
+      if(user.role == Role.Guest) {
         return true;
       }
 

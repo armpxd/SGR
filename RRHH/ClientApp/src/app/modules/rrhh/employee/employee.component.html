@@ -21,7 +21,7 @@
                     </div>
                     <div class="col-3">
                         <mat-form-field appearance="outline">
-                            <mat-label>Cedula</mat-label>
+                            <mat-label>Cédula</mat-label>
                             <mat-icon matPrefix>perm_contact_calendar</mat-icon>
                             <input formControlName="cedula" name="cedula" matInput type="text">
                         </mat-form-field>
@@ -76,7 +76,7 @@
                 <div class="row">
                     <div class="col-1">
                         <section class="middle">
-                            <mat-checkbox formControlName="estado">Activo</mat-checkbox>
+                            <mat-checkbox formControlName="estado" [value]="1">Activo</mat-checkbox>
                         </section>
                     </div>
                 </div>
@@ -96,7 +96,7 @@
                     <div *ngIf="!editing" class="col-2 col-t-4">
                         <button type="button" mat-raised-button color="primary" (click)="save()">
                             <mat-icon>save</mat-icon>
-                            Guardar
+                            Agregar
                         </button>
                     </div>
                 </div>
@@ -105,7 +105,7 @@
     </div>
 
     <div class="container">
-        <div class="title">Listado de empleado
+        <div class="title">Listado de empleados
             <div class="items-per-page">
                 <select [(ngModel)]="paginatorOptions.itemsPerPage">
                     <option [value]="5">5</option>
@@ -136,7 +136,7 @@
                     <tr>
                         <th>Nombre</th>
                         <th>Apellidos</th>
-                        <th>Cedula</th>
+                        <th>Cédula</th>
                         <th>Correo</th>
                         <th>Departamento</th>
                         <th>Puesto</th>

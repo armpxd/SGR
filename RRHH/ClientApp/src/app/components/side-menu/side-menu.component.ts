@@ -17,8 +17,12 @@ export class SideMenuComponent implements OnInit {
     this.loggedUser = this.authService.LoggedUser;
   }
 
-  canShow(): boolean {
+  isRRHH(): boolean {
     return this.loggedUser.role == Role.RRHH;
+  }
+
+  isAspirant(): boolean {
+    return this.loggedUser.role == Role.Guest;
   }
 
 }

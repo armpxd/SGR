@@ -34,12 +34,12 @@ export class RequestInterceptor implements HttpInterceptor {
 
         if (err.status === 401) {
           this.authService.logout();
-          this.mainService.HideLoading();
+          this.mainService.HideLoading(true);
           this.dialogService.showSnack("Su sesión ha espirado");
         }
         else {
           this.onHttpError.next(err);
-          this.mainService.HideLoading();
+          this.mainService.HideLoading(true);
           this.dialogService.showSnack(err.message);
         }
         return throwError( err );

@@ -1,12 +1,8 @@
 ﻿using RRHH.Models.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RRHH.Models.ViewModels
 {
-    public class Aspirant
+    public class AspirantUserViewModel
     {
         public string Nombre { get; set; }
         public string Apellidos { get; set; }
@@ -30,7 +26,7 @@ namespace RRHH.Models.ViewModels
         {
             this.Nombre = this.Nombre?.Trim();
             this.Apellidos = this.Apellidos?.Trim();
-            this.Cedula = this.Cedula?.Trim();
+            this.Cedula = this.Cedula?.Replace("-", "")?.Trim();
             this.Telefono = this.Telefono?.Trim();
             this.Correo = this.Correo?.Trim();
         }
@@ -44,9 +40,9 @@ namespace RRHH.Models.ViewModels
                 Correo = this.Correo,
                 Apellidos = this.Apellidos,
                 Telefono = this.Telefono,
-                Cedula = this.Cedula,
+                Cedula = this.Cedula?.Replace("-",""),
                 Clave = this.Clave,
-                Estado = false,
+                Estado = Estado.Inactivo,
                 Role = Role.Candidato,
             };
         }

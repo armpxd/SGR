@@ -25,8 +25,8 @@ export class SkillService {
       return this.http.post<boolean>(url, data);
     }
 
-    GetAll(): Observable<ISkill[]> {
-      const url = this.hc.GetUrl(URL.GET_ALL);
+    GetAll(includeInactives: boolean = true): Observable<ISkill[]> {
+      const url = this.hc.GetUrl(URL.GET_ALL, {includeInactives});
       return this.http.get<ISkill[]>(url);
     }
 

@@ -1,9 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RRHH.Models.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RRHH.Services.Data
 {
@@ -23,5 +19,10 @@ namespace RRHH.Services.Data
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Registro> Registros { get; set; }
 
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

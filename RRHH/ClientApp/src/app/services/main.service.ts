@@ -12,26 +12,43 @@ export class MainService {
   private tm;
   constructor(private componentService: ComponentService) { }
 
+  // ShowLoading() {
+  //   if (!this.loading) {
+  //     this.loading = false;
+  //     this.tm = setTimeout(() => {
+  //       if (this.loading === false) {
+  //         this.loading = this.componentService.CreateDynamicComponent(LoadingPageComponent);
+  //       } else {
+  //         this.loading = null;
+  //       }
+  //     }, 300);
+  //   }
+  // }
+
+  // HideLoading() {
+  //   if (this.loading) {
+  //     this.componentService.RemoveComponent(this.loading)
+  //   }
+  //   this.loading = null;
+  //   if (this.tm) {
+  //     clearTimeout(this.tm);
+  //   }
+  // }
+
+  loadingCounts = 0;
+
   ShowLoading() {
+    this.loadingCounts++;
     if (!this.loading) {
-      this.loading = false;
-      this.tm = setTimeout(() => {
-        if (this.loading === false) {
-          this.loading = this.componentService.CreateDynamicComponent(LoadingPageComponent);
-        } else {
-          this.loading = null;
-        }
-      }, 300);
+      this.loading = this.componentService.CreateDynamicComponent(LoadingPageComponent);
     }
   }
 
-  HideLoading() {
-    if (this.loading) {
+  HideLoading(force: boolean = false) {
+    this.loadingCounts--;
+    if((this.loadingCounts <= 0 && this.loading) || force) {
       this.componentService.RemoveComponent(this.loading)
-    }
-    this.loading = null;
-    if (this.tm) {
-      clearTimeout(this.tm);
+      this.loading = null;
     }
   }
 
@@ -79,5 +96,22 @@ export class MainService {
     document.body.appendChild(link);
 
     link.click();
+  }
+
+  ValidatePassword(password: string) {
+    return password?.length >= 6;
+  }
+
+  GetDate(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0,0,0);
+  }
+
+  ContainsNormalize(text: string, textToCompare: string): boolean {
+    if(text == null) return false;
+    if(textToCompare == null) return false;
+
+    let t = text.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+    let ttc = textToCompare.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+    return t.trim().toLowerCase().includes(ttc.trim().toLowerCase());
   }
 }

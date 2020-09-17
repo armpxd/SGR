@@ -24,7 +24,9 @@ namespace RRHH.Services.Business
 
         public async Task Invoke(HttpContext context, MySQLDbContext dbContext)
         {
-            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var token = context.Request.Headers["Authorization"].FirstOrDefault()?
+                                                                .Split(" ")
+                                                                .Last();
 
             if (token != null)
                 AttachUserToContext(context, dbContext, token);
@@ -44,14 +46,14 @@ namespace RRHH.Services.Business
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                    // Set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "usuarioId").Value);
 
-                // attach user to context on successful jwt validation
+                // Attach user to context on successful jwt validation
                 context.Items["User"] = dbContext.Usuarios.FirstOrDefault(x => x.UsuarioId == userId);
             }
             catch

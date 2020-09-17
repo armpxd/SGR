@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RRHH.Models;
 using RRHH.Models.Database;
 using RRHH.Services.Data;
 
 namespace RRHH.Controllers
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
     [Authorize]
+    [ApiController]
+    [Route("api/[controller]/[action]")]
     public class SkillController : ControllerBase
     {
-        readonly MySQLDbContext _dbContext;
+        private readonly MySQLDbContext _dbContext;
 
         public SkillController(MySQLDbContext dbContext)
         {
@@ -36,9 +34,16 @@ namespace RRHH.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Competencia> GetAll()
+        public IEnumerable<Competencia> GetAll(bool includeInactives = true)
         {
-            var result = _dbContext.Competencias.OrderByDescending(x => x.Estado).ThenBy(x => x.Descripcion);
+            var result = _dbContext.Competencias.AsQueryable();
+            if (includeInactives)
+                result = result.Where(x => x.Estado == Estado.Activo || x.Estado == Estado.Inactivo);
+            else
+                result = result.Where(x => x.Estado == Estado.Activo);
+
+            result = result.OrderByDescending(x => x.Estado)
+                           .ThenBy(x => x.Descripcion);
             return result;
         }
 
@@ -64,10 +69,11 @@ namespace RRHH.Controllers
         public bool Delete(int id)
         {
             if (id <= 0) return false;
-            var lang = _dbContext.Competencias.FirstOrDefault(x => x.CompetenciaId == id);
-            if (lang is null) return false;
+            var item = _dbContext.Competencias.FirstOrDefault(x => x.CompetenciaId == id);
+            if (item is null) return false;
 
-            _dbContext.Remove(lang);
+            item.Estado = Estado.Eliminado;
+            _dbContext.Update(item);
             _dbContext.SaveChanges();
 
             return true;

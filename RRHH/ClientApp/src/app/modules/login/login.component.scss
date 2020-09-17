@@ -48,3 +48,17 @@ button {
     text-align: center;
     width: 100%;
 }
+
+.forgotpassword {
+    margin: 5px;
+    margin-bottom: 15px;
+    text-align: right;
+    a {
+        color: #1976d2;
+        text-decoration: none;
+
+        &:hover {
+            color: rgba($color: #1976d2, $alpha: 0.8);
+        }
+    }
+}

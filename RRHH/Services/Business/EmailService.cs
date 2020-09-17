@@ -1,98 +1,120 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
+﻿
+
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
+using MimeKit.Text;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+using System;
+using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace RRHH.Services.Business
 {
     public class EmailService
     {
-        private readonly string SenderEmail;
-        private readonly SmtpClient smtpClient;
         private readonly EmailConfig config;
 
         public EmailService(EmailConfig config)
         {
             this.config = config;
-            this.SenderEmail = config.SenderEmail;
-            this.smtpClient = new SmtpClient()
-            {
-                Host = config.Host,
-                Port = config.Port,
-                Credentials = new System.Net.NetworkCredential(config.SenderEmail, config.Password),
-                EnableSsl = true
-            };
         }
 
-        public EmailService(string senderEmail, string password, string host, int port)
+        public void Send(string to, string subject, string html)
         {
-            this.SenderEmail = senderEmail;
-            this.smtpClient = new SmtpClient()
+            try
             {
-                Host = host,
-                Port = port,
-                Credentials = new System.Net.NetworkCredential(senderEmail, password),
-                EnableSsl = true
-            };
+#if DEBUG
+                // Create message
+                var email = new MimeMessage();
+                email.Sender = MailboxAddress.Parse(config.SenderEmail);
+                email.To.Add(MailboxAddress.Parse(to));
+                email.Subject = subject;
+                email.Body = new TextPart(TextFormat.Html) { Text = html };
+
+                // Send email
+                using var smtp = new SmtpClient();
+                smtp.Connect(config.Host, config.Port, SecureSocketOptions.StartTls);
+                smtp.Authenticate(config.SenderEmail, config.Password);
+                smtp.Send(email);
+                smtp.Disconnect(true);
+#else
+                SednFromSendGrid(to, subject, html).Wait();
+#endif
+            }
+            catch { }
+            }
+
+        private async Task SednFromSendGrid(string to, string subject, string html)
+        {
+            //Get the Send Grid Email service API Key from the environment variables.
+            var apiKey = Environment.GetEnvironmentVariable("mvmail_key");
+            var client = new SendGridClient(apiKey);
+            var from = new EmailAddress("no-reply@sgrhr.azurewebsites.net", "SGR Mail Service");
+            var msg = MailHelper.CreateSingleEmail(from, new EmailAddress(to), subject, "", html);
+            var response = await client.SendEmailAsync(msg);
         }
 
-        public void SendMasive(IEnumerable<string> to, string subject, string body, bool isHTML = false)
+        public void SendConfirmationMail(string mail, string name, string token)
         {
-            MailMessage mail = new MailMessage()
+            string htmlTemplate = @"";
+            try
             {
-                From = new MailAddress(this.SenderEmail),
-                Subject = subject,
-                Body = body,
-                IsBodyHtml = isHTML
-            };
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Templates", "confirmation-email.html");
+                if (!File.Exists(path))
+                    path = Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).FullName, "Templates", "confirmation-email.html");
+                if (File.Exists(path))
+                    htmlTemplate = File.ReadAllText(path);
+            }
+            catch (Exception) { }
+            string url = config.ActivationURL;
+#if !DEBUG
+            url = config.ActivationURLProd;
+#endif
+            string link = $"{url}?email={mail}&token={token}";
+            string body = htmlTemplate.Replace("{name}", name)
+                                      .Replace("{token}", token)
+                                      .Replace("{link}", link);
 
-            foreach (var bcc in to)
-                mail.Bcc.Add(bcc);
-
-            this.smtpClient.Send(mail);
+            this.Send(mail, "Confirmar correo", body);
         }
 
-
-        public void Send(string to, string subject, string body, bool isHTML = false)
+        public void SendRequestRestorePassword(string mail, string name, string token)
         {
-            MailMessage mail = new MailMessage(this.SenderEmail, to, subject, body)
+            string htmlTemplate = "";
+            try
             {
-                IsBodyHtml = isHTML
-            };
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Templates", "restore-password-email.html");
+                if (!File.Exists(path))
+                    path = Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).FullName, "Templates", "restore-password-email.html");
+                if (File.Exists(path))
+                    htmlTemplate = File.ReadAllText(path);
+            }
+            catch (Exception) { }
+            string url = config.RestorePasswordURL;
+#if !DEBUG
+            url = config.RestorePasswordURLProd;
+#endif
+            string link = $"{url}?email={mail}&token={token}";
+            string body = htmlTemplate.Replace("{name}", name)
+                                      .Replace("{token}", token)
+                                      .Replace("{link}", link);
 
-            this.smtpClient.Send(mail);
+            this.Send(mail, "Recuperar contraseña", body);
         }
 
-
-        public async void SendAsync(string to, string subject, string body, bool isHTML = false)
-        {
-            MailMessage mail = new MailMessage(this.SenderEmail, to, subject, body)
-            {
-                IsBodyHtml = isHTML
-            };
-
-            await this.smtpClient.SendMailAsync(mail);
-        }
-
-        public void SendConfirmationMail(string mail, string name, string token) 
-        {
-            string link = $"{this.config.ActivationUrl}?email={mail}&token={token}";
-            string body = $@"<p>Hola {name}, usted ha creado una cuenta en nuestro sistema de Recursos Humanos. 
-                            Utilice el siguiente código para confirmar su cuenta.<p>
-                            <h1>{token}</h1>
-                            <a href='{link}'>{link}</a>";
-
-            this.Send(mail, "Confirmar correo", body, true);
-        }
-
-        public class EmailConfig 
+        public class EmailConfig
         {
             public string SenderEmail { get; set; }
             public string Password { get; set; }
             public int Port { get; set; }
             public string Host { get; set; }
-            public string ActivationUrl { get; set; }
+            public string ActivationURL { get; set; }
+            public string ActivationURLProd { get; set; }
+            public string RestorePasswordURL { get; set; }
+            public string RestorePasswordURLProd { get; set; }
         }
     }
 }

@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpCommonService} from '../http-common.service';
 import { Observable } from 'rxjs';
 import { IUser } from '../../models/data/i-user';
-import { IRegistration } from 'src/app/models/i-registration';
+import { IRegistration } from 'src/app/models/data/i-registration';
 
 
 const URL = {
@@ -13,7 +13,9 @@ const URL = {
   CREATE_ASPIRANT: 'user/CreateAspirant',
   UPDATE: 'user/update',
   DELETE: 'user/delete',
-  ACTIVATE_ACCOUNT: 'user/ActivateAccount'
+  ACTIVATE_ACCOUNT: 'user/ActivateAccount',
+  RESTORE_PASSWORD: 'user/RestorePassword',
+  REQUEST_RESTORE_PASSWORD: 'user/RequestRestorePassword'
 };
 @Injectable({
   providedIn: 'root'
@@ -51,6 +53,16 @@ export class UserService {
     ActivateAccount(data): Observable<boolean> {
       const url = this.hc.GetUrl(URL.ACTIVATE_ACCOUNT, data);
       return this.http.get<boolean>(url);
+    }
+
+    RequestRestorePassword(data): Observable<boolean> {
+      const url = this.hc.GetUrl(URL.REQUEST_RESTORE_PASSWORD);
+      return this.http.post<boolean>(url, data);
+    }
+
+    RestorePassword(data): Observable<boolean> {
+      const url = this.hc.GetUrl(URL.RESTORE_PASSWORD);
+      return this.http.post<boolean>(url, data);
     }
 
 }

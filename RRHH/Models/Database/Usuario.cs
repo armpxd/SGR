@@ -1,11 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace RRHH.Models.Database
 {
@@ -42,23 +38,10 @@ namespace RRHH.Models.Database
 
         [NotNull]
         [DefaultValue(1)]
-        public bool Estado { get; set; }
+        public Estado Estado { get; set; }
 
         [NotNull]
         [DefaultValue(0)]
         public Role Role { get; set; }
-
-        public bool IsValid()
-        {
-            return !string.IsNullOrWhiteSpace(this.NombreUsuario) && !string.IsNullOrWhiteSpace(this.Nombre) && !string.IsNullOrWhiteSpace(this.Correo);
-        }
-
-        public void Trim() 
-        {
-            this.NombreUsuario = this.NombreUsuario?.Trim();
-            this.Nombre = this.Nombre?.Trim();
-            this.Correo = this.Correo?.Trim();
-            this.Apellidos = this.Apellidos?.Trim();
-        }
     }
 }

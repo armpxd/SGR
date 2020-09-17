@@ -54,7 +54,10 @@ export class DepartmentsComponent implements OnInit {
   save() {
     if(this.validateForm()) {
       this.mainService.ShowLoading();
-      this.apiService.Create(this.frmGroup.value).subscribe(response => {
+      const data: IDepartment = this.frmGroup.value;
+      data.estado = data.estado ? 1 : 0;
+      
+      this.apiService.Create(data).subscribe(response => {
         this.mainService.HideLoading();
         if(response) {
           this.dialogService.showSnack('Datos guardados correctamente');
@@ -71,6 +74,7 @@ export class DepartmentsComponent implements OnInit {
     if(this.validateForm()) {
       const data: IDepartment = this.frmGroup.value;
       data.departamentoId = this.editing.departamentoId;
+      data.estado = data.estado ? 1 : 0;
 
       this.mainService.ShowLoading();
       this.apiService.Update(data).subscribe(response => {
@@ -93,7 +97,7 @@ export class DepartmentsComponent implements OnInit {
     } else {
       text = text.toLocaleLowerCase();
       this.paginatorOptions.currentPage = 0;
-      this.FILTERED_TABLEDATA = this.TABLEDATA.filter(x => x.descripcion?.toLowerCase()?.includes(text))
+      this.FILTERED_TABLEDATA = this.TABLEDATA.filter(x => this.mainService.ContainsNormalize(x.descripcion, text))
     }
   }
 

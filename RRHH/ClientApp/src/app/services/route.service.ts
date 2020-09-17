@@ -32,5 +32,15 @@ export class RouteService {
     }
   }
 
-  
+  goToRestorePassword(email?: string) {
+    if(email) {
+      this.goPage('/invitado/cambiarcontrasena?email=' + email);
+    } else{
+      this.goPage('/invitado/cambiarcontrasena');
+    }
+  }
+
+  goToRequestPassword() {
+    this.goPage('/invitado/recuperarcontrasena');
+  }
 }

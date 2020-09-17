@@ -31,15 +31,19 @@ export class NewEmployeeComponent implements OnInit {
 
   preview() {
     this.TABLEDATA = [];
+    let data = this.frmGroup.value;
+    data = {
+      desde: this.mainService.GetDate(data.desde),
+      hasta: this.mainService.GetDate(data.hasta)
+    };
     this.mainService.ShowLoading();
-    this.resportService.GetNewEmployee(this.frmGroup.value).subscribe(response => {
+    this.resportService.GetNewEmployee(data).subscribe(response => {
       this.mainService.HideLoading();
       this.TABLEDATA = response;
     });
   }
 
   exportToCSV() {
-
     if(this.TABLEDATA.length == 0) {
       this.dialogSerice.showSnack('No hay datos para exportar');
       return;
@@ -48,7 +52,7 @@ export class NewEmployeeComponent implements OnInit {
     let rows: any[] = [];
 
     rows.push([
-      'Reporte de empleados'
+      'Reporte de empleados por fecha de ingreso'
     ]);
 
     rows.push([
@@ -64,7 +68,7 @@ export class NewEmployeeComponent implements OnInit {
     rows.push([
       'Nombre',
       'Apellidos',
-      'Cedula',
+      'Cédula',
       'Correo',
       'Departamento',
       'Puesto',

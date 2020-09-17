@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmComponent } from 'src/app/components/confirm/confirm.component';
 import { ComponentType } from '@angular/cdk/portal';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root'
@@ -16,15 +16,13 @@ export class DialogService {
     return this.snackBar.open(message, 'Cerrar', {duration});
   }
 
-  openDialog(component: ComponentType<any>, data: any = null) {
-    const dialogRef = this.dialog.open(component, {
-      data
-    });
+  openDialog(component: ComponentType<any>, data?: MatDialogConfig) {
+    const dialogRef = this.dialog.open(component, data,);
     return dialogRef;
   }
 
   confirm(message: string) {
-    return this.openDialog(ConfirmComponent, message );
+    return this.openDialog(ConfirmComponent, {data: message} );
   }
 
 }

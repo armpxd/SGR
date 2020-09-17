@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace RRHH.Models.ViewModels
+﻿namespace RRHH.Models.ViewModels
 {
-    public class UserLogin
+    public class UserLoginViewModel
     {
         public string Username { get; set; }
         public string Password { get; set; }

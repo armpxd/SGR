@@ -17,6 +17,14 @@ const routes: Routes = [
       {
         path: 'usuariocreado',
         loadChildren: () => import('./user-created/user-created.module').then(m=> m.UserCreatedModule)
+      },
+      {
+        path: 'cambiarcontrasena',
+        loadChildren: () => import('./restorepassword/restorepassword.module').then(m=> m.RestorepasswordModule)
+      },
+      {
+        path: 'recuperarcontrasena',
+        loadChildren: () => import('./request-restore-password/request-restore-password.module').then(m=> m.RequestRestorePasswordModule)
       }
     ]
   }

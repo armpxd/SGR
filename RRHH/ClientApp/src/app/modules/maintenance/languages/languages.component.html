@@ -16,7 +16,7 @@
                 <div class="row">
                     <div class="col-1">
                         <section class="middle">
-                            <mat-checkbox formControlName="estado">Activo</mat-checkbox>
+                            <mat-checkbox formControlName="estado" [value]="1">Activo</mat-checkbox>
                         </section>
                     </div>
                 </div>
@@ -36,7 +36,7 @@
                     <div *ngIf="!editing" class="col-2 col-t-4">
                         <button type="button" mat-raised-button color="primary" (click)="save()">
                             <mat-icon>save</mat-icon>
-                            Guardar
+                            Agregar
                         </button>
                     </div>
                 </div>
@@ -45,7 +45,7 @@
     </div>
 
     <div class="container">
-        <div class="title">Listado de idioma
+        <div class="title">Listado de idiomas
             <div class="items-per-page">
                 <select [(ngModel)]="paginatorOptions.itemsPerPage">
                     <option [value]="5">5</option>

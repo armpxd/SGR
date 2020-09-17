@@ -9,14 +9,14 @@
                             <mat-form-field appearance="outline">
                                 <mat-label>Nombre</mat-label>
                                 <mat-icon matPrefix>person</mat-icon>
-                                <input formControlName="nombre" name="name" matInput type="text">
+                                <input formControlName="nombre" name="nombre" matInput type="text">
                             </mat-form-field>
                         </div>
                         <div class="col-6">
                             <mat-form-field appearance="outline">
                                 <mat-label>Apellidos</mat-label>
                                 <mat-icon matPrefix>person</mat-icon>
-                                <input formControlName="apellidos" name="lastname" matInput type="text">
+                                <input formControlName="apellidos" name="apellidos" matInput type="text">
                             </mat-form-field>
                         </div>
                     </div>
@@ -25,14 +25,14 @@
                             <mat-form-field appearance="outline">
                                 <mat-label>Cédula</mat-label>
                                 <mat-icon matPrefix>perm_contact_calendar</mat-icon>
-                                <input formControlName="cedula" name="cedula" matInput type="text">
+                                <input formControlName="cedula" name="cedula" matInput type="text" placeholder="00000000000">
                             </mat-form-field>
                         </div>
                         <div class="col-6">
                             <mat-form-field appearance="outline">
                                 <mat-label>Teléfono</mat-label>
                                 <mat-icon matPrefix>local_phone</mat-icon>
-                                <input formControlName="telefono" name="tel" matInput type="tel" placeholder="809-000-0000">
+                                <input formControlName="telefono" name="telefono" matInput type="tel" placeholder="809-000-0000">
                             </mat-form-field>
                         </div>
                     </div>
@@ -42,7 +42,7 @@
                             <mat-form-field appearance="outline">
                                 <mat-label>Correo electrónico</mat-label>
                                 <mat-icon matPrefix>alternate_email</mat-icon>
-                                <input formControlName="correo" name="email" matInput type="email" placeholder="main@example.com">
+                                <input formControlName="correo" name="correo" matInput type="email" placeholder="mail@example.com">
                             </mat-form-field>
                         </div>
                     </div>
@@ -50,9 +50,9 @@
                     <div class="row">
                         <div class="col-12">
                             <mat-form-field appearance="outline">
-                                <mat-label>Repetir electrónico</mat-label>
+                                <mat-label>Repetir correo electrónico</mat-label>
                                 <mat-icon matPrefix>alternate_email</mat-icon>
-                                <input formControlName="repetirCorreo" name="repeatemail" autocomplete="none" matInput type="email">
+                                <input formControlName="repetirCorreo" name="repetirCorreo" matInput type="email" autocomplete="none" placeholder="mail@example.com">
                             </mat-form-field>
                         </div>
                     </div>
@@ -62,7 +62,7 @@
                             <mat-form-field appearance="outline">
                                 <mat-label>Contraseña</mat-label>
                                 <mat-icon matPrefix>lock_open</mat-icon>
-                                <input formControlName="clave" name="password" matInput type="password">
+                                <input formControlName="clave" name="clave" matInput type="password">
                             </mat-form-field>
                         </div>
                     </div>
@@ -72,14 +72,15 @@
                             <mat-form-field appearance="outline">
                                 <mat-label>Repetir contraseña</mat-label>
                                 <mat-icon matPrefix>lock_open</mat-icon>
-                                <input formControlName="repetirClave" name="repeatpassword" matInput type="password">
+                                <input formControlName="repetirClave" name="repetirClave" matInput type="password">
                             </mat-form-field>
                         </div>
                     </div>
                 </form>
 
                 <div class="buttons">
-                    <button mat-raised-button color="warn" type="button" (click)="save()">Crear cuenta</button>
+                    <button mat-raised-button color="primary" type="button" (click)="save()">Crear cuenta</button>
+                    <button mat-raised-button color="warn" type="button" [routerLink]="['/login']" style="margin-top: 20px;">Volver a inicio</button>
                 </div>
             </div>
         </div>

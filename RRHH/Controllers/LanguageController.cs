@@ -1,26 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RRHH.Models;
 using RRHH.Models.Database;
 using RRHH.Services.Data;
 
 namespace RRHH.Controllers
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
     [Authorize]
+    [ApiController]
+    [Route("api/[controller]/[action]")]
     public class LanguageController : ControllerBase
     {
-        readonly MySQLDbContext _dbContext;
+        private readonly MySQLDbContext _dbContext;
 
         public LanguageController(MySQLDbContext dbContext)
         {
             _dbContext = dbContext;
         }
-
 
         [HttpPost]
         public bool Create([FromBody] Idioma model)
@@ -37,9 +34,16 @@ namespace RRHH.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Idioma> GetAll() 
+        public IEnumerable<Idioma> GetAll(bool includeInactives = true) 
         {
-            var result = _dbContext.Idiomas.OrderByDescending(x=> x.Estado).ThenBy(x=> x.Descripcion);
+            var result = _dbContext.Idiomas.AsQueryable();
+            if (includeInactives)
+                result = result.Where(x => x.Estado == Estado.Activo || x.Estado == Estado.Inactivo);
+            else
+                result = result.Where(x => x.Estado == Estado.Activo);
+
+            result = result.OrderByDescending(x => x.Estado)
+                           .ThenBy(x => x.Descripcion);
             return result;
         }
 
@@ -65,10 +69,11 @@ namespace RRHH.Controllers
         public bool Delete(int id) 
         {
             if (id <= 0) return false;
-            var lang = _dbContext.Idiomas.FirstOrDefault(x => x.IdiomaId == id);
-            if (lang is null) return false;
+            var item = _dbContext.Idiomas.FirstOrDefault(x => x.IdiomaId == id);
+            if (item is null) return false;
 
-            _dbContext.Remove(lang);
+            item.Estado = Estado.Eliminado;
+            _dbContext.Update(item);
             _dbContext.SaveChanges();
 
             return true;

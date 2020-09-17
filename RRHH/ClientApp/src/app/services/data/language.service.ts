@@ -25,8 +25,8 @@ export class LanguageService {
       return this.http.post<boolean>(url, data);
     }
 
-    GetAll(): Observable<ILanguage[]> {
-      const url = this.hc.GetUrl(URL.GET_ALL);
+    GetAll(includeInactives: boolean = true): Observable<ILanguage[]> {
+      const url = this.hc.GetUrl(URL.GET_ALL, { includeInactives });
       return this.http.get<ILanguage[]>(url);
     }
 

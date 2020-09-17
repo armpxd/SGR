@@ -4,11 +4,12 @@ import { DialogService } from 'src/app/services/dialog.service';
 import { MainService } from 'src/app/services/main.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { IEmployee } from 'src/app/models/data/i-employee';
-import { Role } from 'src/app/models/enums/role';
 import { DepartmentService } from 'src/app/services/data/department.service';
 import { PositionService } from 'src/app/services/data/position.service';
 import { IDepartment } from 'src/app/models/data/i-department';
 import { IPosition } from 'src/app/models/data/i-position';
+import { State } from 'src/app/models/enums/state';
+import { ErrorStateMatcher } from '@angular/material/core';
 
 
 @Component({
@@ -26,7 +27,6 @@ export class EmployeeComponent implements OnInit {
 
   searchValue = '';
   editing: IEmployee = null;
-  Role = Role;
 
   frmGroup = new FormGroup({
     nombre: new FormControl(null, [Validators.required]),
@@ -37,7 +37,7 @@ export class EmployeeComponent implements OnInit {
     departamento: new FormControl(null, [Validators.required]),
     puesto: new FormControl(null, [Validators.required]),
     salario: new FormControl(null, [Validators.required, Validators.min(0)]),
-    estado: new FormControl(true),
+    estado: new FormControl(State.Activo),
   });
 
   constructor(private apiService: EmployeeService,
@@ -50,7 +50,6 @@ export class EmployeeComponent implements OnInit {
     this.getAll();
     this.getDepartments();
     this.getPositions();
-    this.Role.Guest
   }
 
   getAll() {
@@ -98,6 +97,9 @@ export class EmployeeComponent implements OnInit {
   save() {
     if(this.validateForm()) {
       this.mainService.ShowLoading();
+      const data: IEmployee = this.frmGroup.value;
+      data.estado = data.estado ? 1 : 0;
+
       this.apiService.Create(this.frmGroup.value).subscribe(response => {
         this.mainService.HideLoading();
         if(response) {
@@ -115,6 +117,7 @@ export class EmployeeComponent implements OnInit {
     if(this.validateForm()) {
       const data: IEmployee = this.frmGroup.value;
       data.empleadoId = this.editing.empleadoId;
+      data.estado = data.estado ? 1 : 0;
 
       this.mainService.ShowLoading();
       this.apiService.Update(data).subscribe(response => {
@@ -137,13 +140,14 @@ export class EmployeeComponent implements OnInit {
     } else {
       text = text.toLocaleLowerCase();
       this.paginatorOptions.currentPage = 0;
-      this.FILTERED_TABLEDATA = this.TABLEDATA.filter(x => x.cedula?.toLowerCase()?.includes(text) ||
-                                                           x.nombre?.toLowerCase()?.includes(text) ||
-                                                           x.apellidos?.toLowerCase()?.includes(text) ||
-                                                           x.correo?.toLowerCase()?.includes(text) ||
-                                                           x.salario?.toString()?.toLowerCase()?.includes(text) ||
-                                                           x.puesto.departamento.descripcion.toLocaleLowerCase().includes(text) ||
-                                                           x.puesto.descripcion.toLocaleLowerCase().includes(text));
+      this.FILTERED_TABLEDATA = this.TABLEDATA.filter(x => 
+                                                      this.mainService.ContainsNormalize(x.cedula,text) ||
+                                                      this.mainService.ContainsNormalize(x.nombre,text) ||
+                                                      this.mainService.ContainsNormalize(x.apellidos,text) ||
+                                                      this.mainService.ContainsNormalize(x.correo,text) ||
+                                                      x.salario?.toString()?.toLowerCase()?.includes(text) ||
+                                                      this.mainService.ContainsNormalize(x.puesto.departamento.descripcion, text) ||
+                                                      this.mainService.ContainsNormalize(x.puesto.descripcion, text));
     }
   }
 
@@ -167,6 +171,7 @@ export class EmployeeComponent implements OnInit {
   openEdit(data: IEmployee) {
     const dta = {...data};
     delete dta.empleadoId;
+    delete dta.candidato;
     dta['departamento'] = dta.puesto.departamento;
     this.frmGroup.setValue(dta);
     this.frmGroup.controls.departamento.setValue(this.DEPARTMENTS.find(x=> x.departamentoId == data.puesto.departamento.departamentoId));
@@ -185,6 +190,9 @@ export class EmployeeComponent implements OnInit {
     const department: IDepartment = this.frmGroup.value.departamento;
     if(!department || !this.POSITIONS.find(x=> x.departamento.departamentoId == department.departamentoId)) {
       this.frmGroup.controls.puesto.setValue(null);
+      this.frmGroup.controls.puesto.disable();
+    } else {
+      this.frmGroup.controls.puesto.enable();
     }
   }
 

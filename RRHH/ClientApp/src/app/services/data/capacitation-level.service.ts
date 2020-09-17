@@ -24,8 +24,8 @@ export class CapacitationLevelService {
       return this.http.post<boolean>(url, data);
     }
 
-    GetAll(): Observable<ICapacitationLevel[]> {
-      const url = this.hc.GetUrl(URL.GET_ALL);
+    GetAll(includeInactives: boolean = true): Observable<ICapacitationLevel[]> {
+      const url = this.hc.GetUrl(URL.GET_ALL, {includeInactives});
       return this.http.get<ICapacitationLevel[]>(url);
     }
 

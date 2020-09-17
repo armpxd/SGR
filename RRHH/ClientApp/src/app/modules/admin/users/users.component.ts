@@ -5,6 +5,7 @@ import { MainService } from 'src/app/services/main.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { IUser } from 'src/app/models/data/i-user';
 import { Role } from 'src/app/models/enums/role';
+import { State } from 'src/app/models/enums/state';
 
 
 @Component({
@@ -29,8 +30,9 @@ export class UsersComponent implements OnInit {
     apellidos: new FormControl(null),
     correo: new FormControl(null, [Validators.required, Validators.email]),
     role: new FormControl(null, [Validators.required]),
-    estado: new FormControl(true),
-
+    estado: new FormControl(State.Activo),
+    cedula: new FormControl(null, [Validators.required, Validators.minLength(10)]),
+    telefono: new FormControl(null, [Validators.required]),
   });
 
   constructor(private apiService: UserService,
@@ -52,17 +54,31 @@ export class UsersComponent implements OnInit {
 
   validateForm(): boolean {
     this.frmGroup.markAllAsTouched();
-    const valid = this.frmGroup.valid;
-    if(!valid) {
+    if(!this.frmGroup.valid) {
       this.dialogService.showSnack('Algunos campos son inválidos. Favor verificar');
+      return false;
+    }
+    
+    const data: IUser = this.frmGroup.value;
+
+    if (!this.mainService.ValidateCedula(data.cedula)) {
+      this.dialogService.showSnack('El número de cédula es inválido');
+      return false;
     }
 
-    return valid;
+    if (data.clave && !this.mainService.ValidatePassword(data.clave)) {
+      this.dialogService.showSnack('La contraseña debe tener por lo menos 6 caracteres.');
+      return false;
+    }
+
+    return true;
   }
 
   save() {
     if(this.validateForm()) {
       this.mainService.ShowLoading();
+      const data: IUser = this.frmGroup.value;
+      data.estado = data.estado ? 1 : 0;
       this.apiService.Create(this.frmGroup.value).subscribe(response => {
         this.mainService.HideLoading();
         if(response) {
@@ -80,6 +96,7 @@ export class UsersComponent implements OnInit {
     if(this.validateForm()) {
       const data: IUser = this.frmGroup.value;
       data.usuarioId = this.editing.usuarioId;
+      data.estado = data.estado ? 1 : 0;
 
       this.mainService.ShowLoading();
       this.apiService.Update(data).subscribe(response => {
@@ -103,9 +120,11 @@ export class UsersComponent implements OnInit {
       text = text.toLocaleLowerCase();
       this.paginatorOptions.currentPage = 0;
       this.FILTERED_TABLEDATA = this.TABLEDATA.filter(x => x.nombreUsuario?.toLowerCase()?.includes(text) ||
-                                                            x.nombre?.includes(text) ||
-                                                            x.apellidos?.includes(text) ||
-                                                            x.correo?.includes(text));
+                                                            x.nombre?.toLowerCase()?.includes(text) ||
+                                                            x.apellidos?.toLowerCase()?.includes(text) ||
+                                                            x.correo?.toLowerCase()?.includes(text) ||
+                                                            x.telefono?.toLowerCase()?.includes(text) ||
+                                                            x.cedula?.toLowerCase()?.includes(text));
     }
   }
 
@@ -125,9 +144,10 @@ export class UsersComponent implements OnInit {
       }
     });
   }
-
+ 
   openEdit(data: IUser) {
     const dta = {...data};
+    //dta.estado = dta.estado == State.Activo ? true : false;
     delete dta.usuarioId;
     dta['clave'] = null;
     this.frmGroup.setValue(dta);
@@ -138,7 +158,7 @@ export class UsersComponent implements OnInit {
 
   reset() {
     this.frmGroup.reset();
-    this.frmGroup.controls.estado.setValue(true);
+    this.frmGroup.controls.estado.setValue(State.Activo);
     this.editing = null;
     this.frmGroup.controls.clave.setValidators([Validators.minLength(6), Validators.required]);
     this.frmGroup.controls.clave.updateValueAndValidity();

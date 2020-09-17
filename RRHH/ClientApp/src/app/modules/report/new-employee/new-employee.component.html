@@ -7,7 +7,7 @@
                     <div class="col-3">
                         <mat-form-field color="accent" appearance="outline">
                             <mat-icon matPrefix>event</mat-icon>
-                            <mat-label>Fecha de ingreso</mat-label>
+                            <mat-label>Fecha de ingreso desde</mat-label>
                             <input matInput formControlName="desde" autocomplete="none" [matDatepicker]="desde" (click)="desde.open()">
                             <mat-datepicker #desde></mat-datepicker>
                           </mat-form-field>
@@ -15,7 +15,7 @@
                     <div class="col-3">
                         <mat-form-field color="accent" appearance="outline">
                             <mat-icon matPrefix>event</mat-icon>
-                            <mat-label>Hasta</mat-label>
+                            <mat-label>Fecha de ingreso hasta</mat-label>
                             <input matInput formControlName="hasta" autocomplete="none" [matDatepicker]="hasta" (click)="hasta.open()">
                             <mat-datepicker #hasta></mat-datepicker>
                           </mat-form-field>
@@ -55,7 +55,7 @@
                         <tr>
                             <th>Nombre</th>
                             <th>Apellidos</th>
-                            <th>Cedula</th>
+                            <th>Cédula</th>
                             <th>Correo</th>
                             <th>Departamento</th>
                             <th>Puesto</th>

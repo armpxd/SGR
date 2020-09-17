@@ -1,5 +1,7 @@
+import { State } from '../enums/state';
+
 export interface ILanguage {
     idiomaId?: number,
     descripcion: string,
-    estado?: boolean
+    estado?: State
 }

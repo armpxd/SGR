@@ -1,17 +1,21 @@
 import { Pipe, PipeTransform } from '@angular/core';
-
+import { State } from '../models/enums/state';
 @Pipe({
   name: 'state'
 })
 export class StatePipe implements PipeTransform {
 
-  transform(value: boolean): string {
+  transform(value: State): string {
 
-    if(value) {
-      return 'Activo';
-    } else {
-      return 'Inactivo';
+    switch(value) {
+      case 0:
+        return 'Inactivo';
+      case 1:
+        return 'Activo';
+      case 2:
+        return 'Eliminado';
+      default:
+        return 'Desconocido';
     }
   }
-
 }
