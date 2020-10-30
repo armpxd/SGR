@@ -17,8 +17,10 @@ import { ISkill } from 'src/app/models/data/i-skill';
 import { ICapacitationLevel } from 'src/app/models/data/i-capacitation-level';
 import { ICapacitation } from '../../models/data/i-capacitation';
 import { IWorkExperience } from 'src/app/models/data/i-work-experience';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Role } from 'src/app/models/enums/role';
+import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
+import { WebService } from 'src/app/services/web.service';
 
 @Component({
   selector: 'app-aspirant-editor',
@@ -35,6 +37,7 @@ export class AspirantEditorComponent implements OnInit, OnDestroy {
   }
 
   selectedIndex = 0;
+  filteredCompanies: Observable<string[]>;
 
   DEPARTMENTS: IDepartment[] = [];
   POSITIONS: IPosition[] = [];
@@ -91,7 +94,8 @@ export class AspirantEditorComponent implements OnInit, OnDestroy {
     private languageService: LanguageService,
     private positionService: PositionService,
     private skillService: SkillService,
-    private capacitationLevelService: CapacitationLevelService) { }
+    private capacitationLevelService: CapacitationLevelService,
+    private webService: WebService) { }
 
   ngOnInit(): void {
     this.loggedUser = this.authService.LoggedUser;
@@ -110,6 +114,13 @@ export class AspirantEditorComponent implements OnInit, OnDestroy {
       this.data.puesto = frm.puesto;
       this.data.salarioAspira = frm.salarioAspira;
     });
+
+    this.filteredCompanies = this.frmWorkExperience.controls.empresa.valueChanges
+    .pipe(
+      debounceTime(300),
+      startWith(''),
+      switchMap(value => this.webService.getCompanyAutocomplete(value))
+    );
   }
 
   ngOnDestroy(): void {

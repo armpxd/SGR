@@ -13,7 +13,7 @@ export class HttpCommonService {
     let url = baseUrl + path;
 
     if(param) {
-      url += '?' + Object.entries(param).map(([key, val]) => `${key}=${encodeURIComponent(val.toString())}`).join('&');
+      url += '?' + Object.entries(param).map(([key, val]) => val ? `${key}=${encodeURIComponent(val.toString())}` : null).filter(x => x).join('&');
     }
 
     return url;

@@ -30,6 +30,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { AspirantEditorContainerComponent } from '../../components/aspirant-editor-container/aspirant-editor-container.component';
 import { ListSelectorComponent } from '../../components/list-selector/list-selector.component';
 import { MatListModule } from '@angular/material/list';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { MatListModule } from '@angular/material/list';
     MatDatepickerModule,
     MatNativeDateModule,
     MatTabsModule,
-    MatListModule
+    MatListModule,
+    MatAutocompleteModule
   ],
   exports: [
     TitlebarComponent,
