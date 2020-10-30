@@ -27,5 +27,21 @@ namespace RRHH.Controllers
             var response = await _countryInfo.GetLanguages();
             return response;
         }
+
+        [HttpGet("company/autocomplete")]
+        public async Task<IEnumerable<string>> SearchCompanyAutocomplete(string query) 
+        {
+            if (string.IsNullOrWhiteSpace(query)) return Enumerable.Empty<string>();
+            var data = new List<string> 
+            {
+                "Claro",
+                "Banco Popular",
+                "Altice",
+                "Vimenca",
+                "Solvex"
+            };
+
+            return data.Where(x=> x.ToLower().Contains(query.ToLower()));
+        }
     }
 }
