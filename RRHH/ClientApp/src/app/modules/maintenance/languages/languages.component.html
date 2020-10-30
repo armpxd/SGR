@@ -39,6 +39,17 @@
                             Agregar
                         </button>
                     </div>
+
+                    <div class="col-7">
+
+                    </div>
+
+                    <div *ngIf="!editing"  class="col-3 col-t-4">
+                        <button type="button" mat-raised-button color="warn" (click)="openExternalLanguagesSelector()">
+                             <mat-icon>search</mat-icon>
+                            Buscar idiomas
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>

@@ -46,6 +46,7 @@ namespace RRHH
             });
 
             services.AddTransient<SecurityService>();
+            services.AddSingleton<CountryInfoWebService>();
 
             EmailService.EmailConfig emailConfig = new EmailService.EmailConfig();
             Configuration.GetSection("emailconfig").Bind(emailConfig);

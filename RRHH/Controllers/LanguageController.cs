@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using MimeKit.Encodings;
 using RRHH.Models;
 using RRHH.Models.Database;
+using RRHH.Models.ViewModels;
 using RRHH.Services.Data;
 
 namespace RRHH.Controllers
@@ -77,6 +79,25 @@ namespace RRHH.Controllers
             _dbContext.SaveChanges();
 
             return true;
+        }
+
+        [HttpPost]
+        public bool SaveToDB([FromBody] IEnumerable<KeyValue> model) 
+        {
+            var langs = model.Select(x => new Idioma 
+            {
+                Descripcion = x.Value,
+                Estado = Estado.Activo
+            });
+
+            var addedLanguages = _dbContext.Idiomas.Where(x => langs.Select(y => y.Descripcion.ToLower()).Contains(x.Descripcion.ToLower()));
+            langs = langs.Where(x => !addedLanguages.Select(y => y.Descripcion.ToLower()).Contains(x.Descripcion.ToLower())).ToList();
+            if (langs.Count() > 0) {
+                _dbContext.AddRange(langs);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            return false;
         }
     }
 }

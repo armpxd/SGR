@@ -4,6 +4,9 @@ import { ILanguage } from 'src/app/models/data/i-language';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MainService } from 'src/app/services/main.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ListSelectorComponent } from 'src/app/components/list-selector/list-selector.component';
+import { IKeyValue } from 'src/app/models/i-key-value';
+import { WebService } from 'src/app/services/web.service';
 
 @Component({
   selector: 'app-languages',
@@ -26,10 +29,36 @@ export class LanguagesComponent implements OnInit {
 
   constructor(private apiService: LanguageService,
               private dialogService: DialogService,
-              private mainService: MainService) { }
+              private mainService: MainService,
+              private webService: WebService) { }
 
   ngOnInit(): void {
     this.getAll();
+  }
+
+  openExternalLanguagesSelector() {
+    this.mainService.ShowLoading();
+    this.webService.getLanguages().subscribe(languages => {
+      this.mainService.HideLoading();
+      this.dialogService.openDialog(ListSelectorComponent, {
+        data: languages,
+        hasBackdrop: true,
+        disableClose: false
+      }).afterClosed().subscribe((langs: IKeyValue[]) => {
+        if(langs && langs.length > 0) {
+          this.mainService.ShowLoading();
+          this.apiService.saveLanguagesToDataBase(langs).subscribe(res=> {
+            this.mainService.HideLoading();
+            if(res) {
+              this.dialogService.showSnack("Idiomas guardados correctamente");
+              this.getAll();
+            } else {
+              this.dialogService.showSnack("Ningún idioma agregado. Es posible que ya existan.");
+            }
+          });
+        }
+      });
+    });
   }
 
   getAll() {

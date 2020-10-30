@@ -1,0 +1,27 @@
+<div class="modal">
+    <div>
+        <mat-form-field>
+            <mat-label>Buscar</mat-label>
+            <input [formControl]="search" matInput type="text">
+        </mat-form-field>
+    </div>
+    <div style="width: 100%; text-align: right;">
+        <mat-checkbox [formControl]="checkAll">Todos</mat-checkbox>
+    </div>
+    <div class="modal-container">
+        <mat-selection-list [(ngModel)]="ITEMS" #languages>
+            <mat-list-option *ngFor="let data of FILTERED_DATA" [value]="data">
+                {{data.value}}
+            </mat-list-option>
+        </mat-selection-list>
+    </div>
+
+    <p>
+        Seleccionados: {{languages.selectedOptions.selected.length}}
+    </p>
+
+    <button mat-raised-button color="primary" (click)="save()">
+        <mat-icon>save</mat-icon>
+        Guardar
+    </button>
+</div>

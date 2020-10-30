@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RRHH.Services.Data;
@@ -14,38 +15,13 @@ namespace RRHH.Controllers
     [Route("[controller]")]
     public class Data : ControllerBase
     {
-        public MySQLDbContext _dbcontext { get; set; }
-        public Data(MySQLDbContext dbcontext)
+        private readonly MySQLDbContext _dbcontext;
+        private readonly CountryInfoWebService _countryInfo;
+
+        public Data(MySQLDbContext dbcontext, CountryInfoWebService countryInfo)
         {
             _dbcontext = dbcontext;
-        }
-
-        [AllowAnonymous]
-        [HttpGet("language/getall")]
-        public IEnumerable<object> GetLanguages() 
-        {
-            var result = _dbcontext.Idiomas.Select(x=> new 
-            {
-                Id = x.IdiomaId,
-                Name = x.Descripcion,
-                State = x.Estado
-            });
-
-            return result;
-        }
-
-        [AllowAnonymous]
-        [HttpGet("language/get/{id}")]
-        public object GetLanguage(int id)
-        {
-            var result = _dbcontext.Idiomas.Select(x => new
-            {
-                Id = x.IdiomaId,
-                Name = x.Descripcion,
-                State = x.Estado
-            });
-
-            return result.FirstOrDefault();
+            _countryInfo = countryInfo;
         }
 
         [HttpGet("date")]

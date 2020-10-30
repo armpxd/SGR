@@ -28,6 +28,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AspirantEditorContainerComponent } from '../../components/aspirant-editor-container/aspirant-editor-container.component';
+import { ListSelectorComponent } from '../../components/list-selector/list-selector.component';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,8 @@ import { AspirantEditorContainerComponent } from '../../components/aspirant-edit
     DescriptionPipe,
     DepartmentPipe,
     AspirantEditorComponent,
-    AspirantEditorContainerComponent
+    AspirantEditorContainerComponent,
+    ListSelectorComponent
   ],
   imports: [
     CommonModule,
@@ -64,7 +67,8 @@ import { AspirantEditorContainerComponent } from '../../components/aspirant-edit
     MatCheckboxModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatTabsModule
+    MatTabsModule,
+    MatListModule
   ],
   exports: [
     TitlebarComponent,
