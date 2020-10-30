@@ -90,7 +90,7 @@ namespace RRHH.Controllers
                 Estado = Estado.Activo
             });
 
-            var addedLanguages = _dbContext.Idiomas.Where(x => langs.Select(y => y.Descripcion.ToLower()).Contains(x.Descripcion.ToLower()));
+            var addedLanguages = _dbContext.Idiomas.Where(x => x.Estado == Estado.Activo && langs.Select(y => y.Descripcion.ToLower()).Contains(x.Descripcion.ToLower()));
             langs = langs.Where(x => !addedLanguages.Select(y => y.Descripcion.ToLower()).Contains(x.Descripcion.ToLower())).ToList();
             if (langs.Count() > 0) {
                 _dbContext.AddRange(langs);
