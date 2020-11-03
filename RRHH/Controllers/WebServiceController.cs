@@ -43,5 +43,44 @@ namespace RRHH.Controllers
 
             return data.Where(x=> x.ToLower().Contains(query.ToLower()));
         }
+
+        [HttpGet("validar/cedula")]
+        public async Task<bool> validar_cedula(string ced)
+        {
+            var c = ced.Replace("-", "");
+            var cedula = c.Substring(0, c.Length - 1);
+            var verificador = int.Parse(c.Substring(c.Length - 1, 1));
+            var suma = 0;
+            var cedulaValida = false;
+
+            if (ced.Length < 11) { return cedulaValida; }
+
+            for (int i = 0; i < cedula.Length; i++)
+            {
+                var mod = 0;
+                if ((i % 2) == 0) { mod = 1; } else { mod = 2; }
+
+                var res = int.Parse(cedula.Substring(i, 1)) * mod;
+                if (res > 9)
+                {
+                    var resString = res.ToString();
+                    var uno = resString.Substring(0, 1);
+                    var dos = resString.Substring(1, 1);
+                    res = int.Parse(uno) + int.Parse(dos);
+                }
+                suma += res;
+            }
+            var el_numero = (10 - (suma % 10)) % 10;
+            if (el_numero == verificador && cedula.Substring(0, 3) != "000")
+            {
+                cedulaValida = true;
+            }
+            else
+            {
+                cedulaValida = false;
+            }
+
+            return cedulaValida;
+        }
     }
 }
